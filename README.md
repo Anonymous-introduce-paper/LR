@@ -1,12 +1,12 @@
 # LREC-Coling
-
+[DEMO]()
 ## Model Details
 - **Model Developers**: Anonymous
 - **Model Architecture** : This Model is an auto-regressive language model that uses an optimized transformer architecture. The tuned versions use pre-training by multilingual text dataset and supervised fine-tuning by multi-task instruction.
 
 ## Dataset
 - Pretraining Dataset: En-Ko Aligned Pretraining Dataset
-- SFT Dataset: 영어 LIMA 데이터셋을 한국어 언어 스타일로 일치 시키고, 한국 문화 맥락을 포함시킨 한국어 LIMA데이터를 제작 KO,EN LIMA 데이터를 Instruction tuning에 활용
+- SFT Dataset: Aligning the English LIMA dataset with Korean language style, creating a Korean LIMA dataset that includes Korean cultural context. Utilizing KO,EN LIMA data for Instruction tuning.
 
 
 ## Prompt Template
@@ -29,7 +29,7 @@ You are a helpful assistant. 당신은 유능한 AI 어시스턴트 입니다.\n
 여자친구 만드는 방법을 알려줘! [/INST]
 ```
 
-## Response  
+## Response  
 ```
 [INST] <<SYS>>\n
 You are a helpful assistant. 당신은 유능한 AI 어시스턴트 입니다.\n
@@ -88,8 +88,19 @@ NVIDIA RTX A6000
 - nvidia driver : 530.30.02
 - CUDA version : 11.7
 
+
+## Evaluation results by GPT4
+- Korean language proficiency
+<figure>
+  <img src="./Kor Eval.png" width="500" >
+</figure>
+
+- English language proficiency
+<figure>
+  <img src="./Eng Eval.png" width="500" >
+</figure>
+
 ## Q/A
-___
 Q: 누전차단기가 내려가는 이유는 무엇입니까?
 ___
 A: 누전차단기는 자동적으로 회로에 이상이 있을 때 차단하기 위한 장치입니다. 😀
@@ -123,9 +134,6 @@ A: 이탈리아의 면적은 301,3040km^2(이하 166,350평방마일}이며, 인
 ___
 Q: Translate this sentence in English
 
-세종은 과학 기술, 예술, 문화, 국방 등 여러 분야에서 다양한 업적을 남겼다. 백성들에게 농사에 관한 책을 펴내었지만 글을 몰라 이해하지 못하는 모습을 보고 누구나 쉽게 배울 수 있는 효율적이고 과학적인 문자 체계인 훈민정음(訓民正音)을 창제하였다. 훈민정음은 언문으로 불리며 왕실과 민간에서 사용되다가 20세기 주시경이 한글로 발전시켜 오늘날 대한민국의 공식 문자로서 널리 쓰이고 있다.
+지구(地球, 영어: Earth)는 태양으로부터 세 번째 행성이며, 조금 두꺼운 대기층으로 둘러싸여 있고, 지금까지 발견된 지구형 행성 가운데 가장 크다. 지구는 45억 6700만 년 전 형성되었으며, 용암 활동이 활발했던 지구와 행성 테이아의 격렬한 충돌로 생성되었을 달을 위성으로 둔다. 지구의 중력은 우주의 다른 물체, 특히 태양과 지구의 유일한 자연위성인 달과 상호작용한다. 지구와 달 사이의 중력 작용으로 조석 현상이 발생한다.
 ___
 A: The earth (地球, 영어:Earth) is the third planet from the sun, and it is the largest of all the known Earth-like planets. The earth was formed about 45.6 billion years ago by the violent collision of the early terrestrial planet and a large moon that generated volcanic activity on the young earth. The force of gravity on the earth is influenced by other celestial bodies, particularly the sun and the earth's only natural satellite, the moon. This force also produces the tide phenomenon.
-
-
-___
