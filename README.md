@@ -51,7 +51,7 @@ from transformers import AutoTokenizer, AutoModelForCausalLM
 from transformers import GenerationConfig
 import torch
 
-model_name = "MLP-KTLim/BaseLLM_L"
+model_name = "Bllossom"
 
 generation_config = GenerationConfig(
     temperature = 0.2,
