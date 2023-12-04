@@ -1,15 +1,15 @@
 # LREC-Coling
 
-## **Model Details**
+## Model Details
 - **Model Developers**: Anonymous
 - **Model Architecture** : This Model is an auto-regressive language model that uses an optimized transformer architecture. The tuned versions use pre-training by multilingual text dataset and supervised fine-tuning by multi-task instruction.
 
-## **Dataset**
-- Pretraining Dataset: 일정부분 같은 내용을 공유하는 영어-한국어 Multilingual dataset
-- SFT Dataset: 영어 LIMA데이터셋을 한국어 언어 스타일로 일치 시키고, 한국 문화 맥락을 포함시킨 한국어 LIMA데이터를 제작 KO,EN LIMA 데이터를 Instruction tuning에 활용
+## Dataset
+- Pretraining Dataset: En-Ko Aligned Pretraining Dataset
+- SFT Dataset: 영어 LIMA 데이터셋을 한국어 언어 스타일로 일치 시키고, 한국 문화 맥락을 포함시킨 한국어 LIMA데이터를 제작 KO,EN LIMA 데이터를 Instruction tuning에 활용
 
 
-## **Prompt Template**
+## Prompt Template
 
 ```
 [INST] <<SYS>>\n
@@ -19,7 +19,8 @@ You are a helpful assistant. 당신은 유능한 AI 어시스턴트 입니다.\n
 {instruction} [/INST]
 ```
 
-### Examples  
+
+## Examples  
 ```
 [INST] <<SYS>>\n
 You are a helpful assistant. 당신은 유능한 AI 어시스턴트 입니다.\n
@@ -28,7 +29,7 @@ You are a helpful assistant. 당신은 유능한 AI 어시스턴트 입니다.\n
 여자친구 만드는 방법을 알려줘! [/INST]
 ```
 
-### Response  
+## Response  
 ```
 [INST] <<SYS>>\n
 You are a helpful assistant. 당신은 유능한 AI 어시스턴트 입니다.\n
@@ -44,16 +45,54 @@ You are a helpful assistant. 당신은 유능한 AI 어시스턴트 입니다.\n
 행복한 연애 하세요☺️
 ```
 
+## Usage
+```
+from transformers import AutoTokenizer, AutoModelForCausalLM
+from transformers import GenerationConfig
+import torch
 
-## **Dataset**
-Ko-En Pretraining Dataset
+model_name = "MLP-KTLim/BaseLLM_L"
 
+generation_config = GenerationConfig(
+    temperature = 0.2,
+    top_p = 0.9,
+    top_k = 40,
+    max_length = 1024,
+    repetition_penalty = 1.1,
+    do_sample = True
+)
 
-## **Q/A**
+device = 'cuda' if torch.cuda.is_available() else 'cpu'
+model = AutoModelForCausalLM.from_pretrained(model_name).to(device)
+tokenizer = AutoTokenizer.from_pretrained(model_name)
+
+PROMPT = "[INST] <<SYS>>\n {system_prompt}\n <</SYS>>\n\n {instruction} [/INST]"
+SYSTEM_PROMPT = "You are a helpful assistant. 당신은 훌륭한 비서입니다."
+instruction = """
+"Italy covers an area of 301,340 km^2 (116,350 sq mi), with a population of nearly 60 million. it is the tenth-largest country by land area in the European continent and the third-most populous member state of the European Union. Its capital and largest city is Rome."를 한국어로 해석해줘.
+"""
+
+tokenized_sample = tokenizer(PROMPT.format(system_prompt = SYSTEM_PROMPT, instruction = instruction), max_length=1024, return_tensors='pt').to(device)
+print(tokenized_sample)
+outputs = model.generate(**tokenized_sample, generation_config = generation_config)
+
+print(tokenizer.decode(outputs[0]))
+```
+response:
+```
+이탈리아는 유럽 대륙의 면적 301,3041 제곱킬로미터(116,30050제곱피 미터) 내에 위치한 국가이며 인구가 거의 60만 명으로 세계 10대 나라 중 하나입니다. 그리고 유럽 연합에서 가장 큰 회원국 중 하나입니다. 로마는 이탈리아의 수도이자 가장 큰 도시입니다.
+```
+
+## Hardware and Software  
+NVIDIA RTX A6000  
+- nvidia driver : 530.30.02
+- CUDA version : 11.7
+
+## Q/A
 ___
-누전차단기가 내려가는 이유는 무엇입니까?
+Q: 누전차단기가 내려가는 이유는 무엇입니까?
 ___
-누전차단기는 자동적으로 회로에 이상이 있을 때 차단하기 위한 장치입니다. 😀
+A: 누전차단기는 자동적으로 회로에 이상이 있을 때 차단하기 위한 장치입니다. 😀
 전기회로에서 이상이 발생하면 회로의 전압과 전류가 허용되는 범위를 초과하여 증가하게 되며, 이는 회로에 손상을 입힐 수 있기 때문입니다. 이러한 상황에서는 누전차단기의 트리거 지점(trip point)을 설정하는 것이 필요합니다. 트리거 지점은 누전차단기의 동작을 제어하는 중요한 요소이며, 이를 설정하는 것은 매우 중요하며 신중하게 고려되어야 합니다. 누전차단기의 트리거 지점은 다음과 같은 요인에 따라 결정됩니다:
 
 회로에 흐르는 전류와 전력량이 어느 정도인지
@@ -66,25 +105,27 @@ ___
 https://en.wikipedia.org/wiki/Circuit_breaker#Overcurrent
 항상 안전을 최우선으로 생각하시고, 전기적 위험으로부터 보호받으세요!
 ___
-협력공인중개사란 무엇인가요?
+Q: 협력공인중개사란 무엇인가요?
 ___
-부동산 중개업에서 자주 볼 수 있는 직업으로, 일반 공인중개사와 함께 부동산 거래를 도와주고 대리수수료를 받는 사람을 의미합니다. 이들은 일반적으로 단독 또는 팀을 이루어 활동하며, 일부 지역에서는 이러한 '부자' 중개인에게 특별히 '공인'되지 않은 다른 '비공인' 중개인이 존재하기도 합니다. 이들의 역할과 권한에 대한 자세한 내용은 지역법령 및 해당 지역 부동산협회(또는 유사 명칭)에서 제공하는 지침서 등을 참조하시기 바랍니다.
+A: 부동산 중개업에서 자주 볼 수 있는 직업으로, 일반 공인중개사와 함께 부동산 거래를 도와주고 대리수수료를 받는 사람을 의미합니다. 이들은 일반적으로 단독 또는 팀을 이루어 활동하며, 일부 지역에서는 이러한 '부자' 중개인에게 특별히 '공인'되지 않은 다른 '비공인' 중개인이 존재하기도 합니다. 이들의 역할과 권한에 대한 자세한 내용은 지역법령 및 해당 지역 부동산협회(또는 유사 명칭)에서 제공하는 지침서 등을 참조하시기 바랍니다.
 ___
-파스타의 주재료가 뭐야?
+Q: 파스타의 주재료가 뭐야?
 ___
-파스타는 다양한 재료로 맛있게 즐길 수 있는 음식입니다.😋 일반적으로 기본 재료는 다음과 같습니다:
+A: 파스타는 다양한 재료로 맛있게 즐길 수 있는 음식입니다.😋 일반적으로 기본 재료는 다음과 같습니다:
 
 면류: 스파게티, 라비올리, 파스타 등 다양한 종류가 있습니다.
 소스: 토마토, 올리브 오일, 양파, 가지, 마늘, 페페로니, 알렉산더 등 선택할 수 있습니다.
 이 외에도 고기, 생선, 채소 등을 추가하여 자신만의 특별한 파스타 요리를 만들 수도 있답니다. :)
 ___
-"Italy covers an area of 301,340 km^2 (116,350 sq mi), with a population of nearly 60 million. it is the tenth-largest country by land area in the European continent and the third-most populous member state of the European Union. Its capital and largest city is Rome."를 한국어로 해석해줘.
+Q: "Italy covers an area of 301,340 km^2 (116,350 sq mi), with a population of nearly 60 million. it is the tenth-largest country by land area in the European continent and the third-most populous member state of the European Union. Its capital and largest city is Rome."를 한국어로 해석해줘.
 ___
-이탈리아의 면적은 301,3040km^2(이하 166,350평방마일}이며, 인구는 거의 60만 명이며. 이는 유럽 대륙에서 10번째로 큰 나라이자 유럽 연합 (EU)의 회원국 중 3번째로 인구가 많은 국가입니다. 로마는 이탈리아의 수도이자 가장 큰 도시입니다.
+A: 이탈리아의 면적은 301,3040km^2(이하 166,350평방마일}이며, 인구는 거의 60만 명이며. 이는 유럽 대륙에서 10번째로 큰 나라이자 유럽 연합 (EU)의 회원국 중 3번째로 인구가 많은 국가입니다. 로마는 이탈리아의 수도이자 가장 큰 도시입니다.
 ___
-Translate this sentence in English
+Q: Translate this sentence in English
 
 세종은 과학 기술, 예술, 문화, 국방 등 여러 분야에서 다양한 업적을 남겼다. 백성들에게 농사에 관한 책을 펴내었지만 글을 몰라 이해하지 못하는 모습을 보고 누구나 쉽게 배울 수 있는 효율적이고 과학적인 문자 체계인 훈민정음(訓民正音)을 창제하였다. 훈민정음은 언문으로 불리며 왕실과 민간에서 사용되다가 20세기 주시경이 한글로 발전시켜 오늘날 대한민국의 공식 문자로서 널리 쓰이고 있다.
 ___
-(the king) made significant contributions in various fields, including science and technology, arts, culture, and defense. Although he issued a book on agriculture to the people, he was seen not understanding it as he couldn't read, so he created an efficient and scientific writing system that could be easily learned by anyone, known as Hunminjeongeum (or Ohnyeom) in vernacular, which was used in both royal court and common society, and has developed into the modern official language of Korea as hanja in the 20th century by Jungseong Jo.
+A: The earth (地球, 영어:Earth) is the third planet from the sun, and it is the largest of all the known Earth-like planets. The earth was formed about 45.6 billion years ago by the violent collision of the early terrestrial planet and a large moon that generated volcanic activity on the young earth. The force of gravity on the earth is influenced by other celestial bodies, particularly the sun and the earth's only natural satellite, the moon. This force also produces the tide phenomenon.
+
+
 ___
