@@ -1,5 +1,5 @@
 # LREC-Coling
-[DEMO]()
+[DEMO](https://126258a26a217a1884.gradio.live/)
 ## Model Details
 - **Model Developers**: Anonymous
 - **Model Architecture** : This Model is an auto-regressive language model that uses an optimized transformer architecture. The tuned versions use pre-training by multilingual text dataset and supervised fine-tuning by multi-task instruction.
