@@ -1,5 +1,5 @@
 # LREC-Coling
-[DEMO](https://e512d9a65c40541d43.gradio.live)
+[DEMO](https://3483d604904a218d38.gradio.live)
 
 ## Model Details
 - **Model Developers**: Anonymous
